@@ -1,0 +1,34 @@
+name: Publish python package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    name: Build and publish python package to pypi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10
+      - name: Install pip
+        run: pip install --upgrade pip
+      - name: Install dependencies
+        run: |
+          cd aoc_py_utils
+          pip install build sdist twine setup-tools
+      - name: Build binary wheel
+        run: |
+          cd aoc_py_utils
+          python setup.py sdist bdist_wheel --outdir ../dist
+
+      - name: Publish to pypi
+        uses: pypa/gh-action-pypi-publish@main
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}

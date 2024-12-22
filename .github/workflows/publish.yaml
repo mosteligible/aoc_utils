@@ -6,25 +6,45 @@ on:
       - main
 
 jobs:
-  build-and-publish-to-pypi:
-    name: Build and publish python package to pypi
+  build-package:
+    name: Build python package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: "Set up python 3.10"
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - name: Install pip
-        run: pip install --upgrade pip
-      - name: Install dependencies
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade build --user
+      - name: Build binary wheel and source tarball
         run: |
           cd aoc_py_utils
-          pip install --upgrade build sdist twine setup-tools
-      - name: Build binary wheel
-        run: |
-          cd aoc_py_utils
-          python setup.py sdist bdist_wheel --outdir ../dist
-      - name: Publish to pypi
-        run: python -m twine upload --repository pypi dist/*
+          python3 -m build
+      - name: Store distributionpackages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distribution
+          path: aoc_py_utils/dist/
+
+  publish-package:
+    name: Publish to PyPI
+    if: startswith(github.ref, "refs/tags/")
+    needs:
+      - build-package
+    runs-on: ubuntu-latest
+    environment:
+      name: aoc_utils_pypi
+      url: https://pypi.org/p/aoc_py_utils
+    permissions:
+      id-token: write
+    steps:
+      - name: Download all dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distribution
+          path: aoc_py_utils/dist/
+        - name: Publish to PyPI
+          uses: pypa/gh-action-pypi-publish@release/v1

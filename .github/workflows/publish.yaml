@@ -6,29 +6,25 @@ on:
       - main
 
 jobs:
-  build-and-publish:
+  build-and-publish-to-pypi:
     name: Build and publish python package to pypi
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up python 3.10
+      - name: "Set up python 3.10"
         uses: actions/setup-python@v5
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: Install pip
         run: pip install --upgrade pip
       - name: Install dependencies
         run: |
           cd aoc_py_utils
-          pip install build sdist twine setup-tools --user
+          pip install --upgrade build sdist twine setup-tools
       - name: Build binary wheel
         run: |
           cd aoc_py_utils
           python setup.py sdist bdist_wheel --outdir ../dist
-
       - name: Publish to pypi
-        uses: pypa/gh-action-pypi-publish@main
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
+        run: python -m twine upload --repository pypi dist/*

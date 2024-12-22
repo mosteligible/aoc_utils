@@ -18,33 +18,11 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install --upgrade build --user
+          pip install --upgrade build uv --user
       - name: Build binary wheel and source tarball
         run: |
           cd aoc_py_utils
-          python3 -m build --outdir ../dist/
-      - name: Store distributionpackages
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-package-distribution
-          path: dist/
-
-  publish-package:
-    name: Publish to PyPI
-    if: startswith(github.ref, 'refs/heads/main')
-    needs:
-      - build-package
-    runs-on: ubuntu-latest
-    environment:
-      name: aoc_utils_pypi
-      url: https://pypi.org/p/aoc_py_utils
-    permissions:
-      id-token: write
-    steps:
-      - name: Download all dists
-        uses: actions/download-artifact@v4
-        with:
-          name: python-package-distribution
-          path: dist/
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+          uv build --out-dir ../dist/
+      - name: Publish with uv
+        run: |
+          uv publish --token ${{ secrets.PYPI_TOKEN }}

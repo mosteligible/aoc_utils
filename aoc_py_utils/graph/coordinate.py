@@ -1,4 +1,4 @@
-from ..constants import Direction
+from constants import Direction
 
 
 class Coordinate:

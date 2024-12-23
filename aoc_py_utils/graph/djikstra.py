@@ -1,7 +1,6 @@
 from heapq import heapify, heappop, heappush
 
-from constants import Direction
-
+from .constants import Direction
 from .coordinate import Coordinate
 
 

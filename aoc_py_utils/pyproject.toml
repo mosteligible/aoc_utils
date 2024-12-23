@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "aoc_py_utils"
-version = "0.0.0"
+dynamic = ["version"]
 authors = [
   { name="Amit Sharma" },
 ]

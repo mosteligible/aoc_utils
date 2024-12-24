@@ -18,10 +18,11 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install --upgrade build uv --user
+          pip install --upgrade build bump uv setuptools-scm --user
       - name: Build binary wheel and source tarball
         run: |
           cd aoc_py_utils
+          python3 -m bump
           uv build --out-dir ../dist/
       - name: Publish with uv
         run: |

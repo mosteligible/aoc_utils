@@ -1,6 +1,7 @@
 package aoc_go_utils
 
 import (
+	"fmt"
 	"slices"
 )
 
@@ -13,6 +14,7 @@ func isPointedTo(num string, order *map[string]Number, allNums *[]string) bool {
 	// from a list of numbers (allNums), check if a number (num) has path to it
 	// based on the edge rules from (order)
 	if len(*allNums) == 1 {
+		fmt.Println("Only one item left..")
 		return false
 	}
 	for _, aNum := range *allNums {
@@ -29,6 +31,7 @@ func isPointedTo(num string, order *map[string]Number, allNums *[]string) bool {
 
 func TopologicalSort(items []string, order *map[string]Number) []string {
 	sortedEntries := []string{}
+	fmt.Println("items:", items)
 	var numToAdd string
 	// from the list of strings, node that is not pointed to will be added first
 	for len(items) > 0 {
@@ -48,7 +51,10 @@ func TopologicalSort(items []string, order *map[string]Number) []string {
 		if idxToDelete != -1 {
 			sortedEntries = append(sortedEntries, numToAdd)
 			items = append(items[:idxToDelete], items[idxToDelete+1:]...)
+			fmt.Println("-- items after pop:", items)
+			fmt.Println("-- sorted entries:", sortedEntries)
 		}
 	}
+	fmt.Println("sorted entries:", sortedEntries)
 	return sortedEntries
 }

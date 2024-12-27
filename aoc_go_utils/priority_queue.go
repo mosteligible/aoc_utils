@@ -1,0 +1,1 @@
+package aoc_go_utils

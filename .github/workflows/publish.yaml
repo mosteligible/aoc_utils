@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'aoc_py_utils/**'
 
 jobs:
   build-package:
